@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -18,32 +18,30 @@ const Messages = () => {
   const messageEndRef = useRef();
 
   const token = useSelector((state) => state?.user?.currentUser?.token);
-const currentUser = useSelector((state) => state?.user?.currentUser);
+  const currentUser = useSelector((state) => state?.user?.currentUser);
 
   // GET OTHER PARTICIPANT CHATTING
-  const getOtherMessager = async () => {
+  const getOtherMessager = useCallback(async () => {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/users/${receiverId}`,
       { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
     );
     setOtherMessager(response?.data);
-  };
+  }, [receiverId, token]);
 
   useEffect(() => {
     messageEndRef?.current?.scrollIntoView();
   }, [messages]);
 
-
-
   // GET THE MESSAGES
-  const getMessages = async () => {
+  const getMessages = useCallback(async () => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/messages/${receiverId}`,
         { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
       );
 
-      console.log("The receiver of the message", messages)
+      console.log("The receiver of the message", messages);
       setMessages(response?.data);
       setConversationId(response?.data?.[0]?.conversationId);
       // setResponderPhoto(response?.data);
@@ -51,18 +49,21 @@ const currentUser = useSelector((state) => state?.user?.currentUser);
       toast.error("Error Message");
       console.log(err);
     }
-  };
+  }, [messages, receiverId, token]);
 
   const socket = useSelector((state) => state?.user?.socket);
 
-  
-     
   // SEND MESSAGE
   const sendMessage = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/messages/${receiverId}`, {messageBody, senderPhoto: currentUser?.profilePhoto, receiverPhoto: otherMessager?.profilePhoto }, 
+        `${import.meta.env.VITE_API_URL}/messages/${receiverId}`,
+        {
+          messageBody,
+          senderPhoto: currentUser?.profilePhoto,
+          receiverPhoto: otherMessager?.profilePhoto,
+        },
         { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -96,12 +97,12 @@ const currentUser = useSelector((state) => state?.user?.currentUser);
 
       return () => socket.off("newMessage");
     });
-  }, [socket, messages]);
+  }, [socket, messages, dispatch, conversations, conversationId]);
 
   useEffect(() => {
     getMessages();
     getOtherMessager();
-  }, [receiverId]);
+  }, [getMessages, getOtherMessager, receiverId]);
 
   return (
     <>
@@ -109,7 +110,7 @@ const currentUser = useSelector((state) => state?.user?.currentUser);
         <section className="messagesBox">
           <header className="messagesBox__header">
             <ProfileImage image={otherMessager?.profilePhoto} />
-            
+
             <div className="messagesBox__header-info">
               <h4>{otherMessager?.fullName}</h4>
               <small>last seen 2 mins ago</small>
@@ -118,11 +119,14 @@ const currentUser = useSelector((state) => state?.user?.currentUser);
 
           <ul className="messagesBox__messages">
             {messages?.map((message) => (
-              <MessageItem message={message} imageSender={currentUser?.profilePhoto} receiverPhoto={otherMessager?.profilePhoto} />
-
+              <MessageItem
+                message={message}
+                imageSender={currentUser?.profilePhoto}
+                receiverPhoto={otherMessager?.profilePhoto}
+              />
             ))}
 
-            <div  ref={messageEndRef}></div>
+            <div ref={messageEndRef}></div>
           </ul>
 
           <form onSubmit={sendMessage}>

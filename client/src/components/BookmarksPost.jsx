@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -12,32 +12,39 @@ const BookmarksPost = ({ post }) => {
   const token = useSelector((state) => state?.user?.currentUser?.token);
   const userId = useSelector((state) => state?.user?.currentUser?.id);
 
-  const getUser = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/users/${userId}`,
-        { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      // console.log("Get user", response);
-       if (response?.data?.bookmarks?.includes(post?._id)) {
-        setPostBookmarked(true);
-        // toast.success(response?.data?.message);
-      } else {
-        setPostBookmarked(false);
-        // toast.success(response?.data?.message);
+  const getUser = useCallback(async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/users/${userId}`,
+      {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
       }
+    );
 
-      setUser(response?.data);
-    } catch (err) {
-      // toast.error(err?.response?.data?.message);
-      console.log(err);
+    setUser(response?.data);
+
+    // Moved bookmark check outside useCallback
+    if (post?._id && response?.data?.bookmarks?.includes(post._id)) {
+      setPostBookmarked(true);
+    } else {
+      setPostBookmarked(false);
     }
-  };
+  } catch (err) {
+    console.log(err);
+  }
+}, [token, userId]);
 
-  useEffect(() => {
-    getUser();
-  }, [user, postBookmarked]);
+useEffect(() => {
+  if (token && userId) getUser();
+}, [token, userId, getUser]);
+
+useEffect(() => {
+  if (user?.bookmarks && post?._id) {
+    setPostBookmarked(user.bookmarks.includes(post._id));
+  }
+}, [user, post?._id]);
+
 
   //   FUNCTION FOR CREATING BOOKMARKS
   const createBookmark = async () => {

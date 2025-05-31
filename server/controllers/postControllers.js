@@ -19,58 +19,51 @@ const createPost = async (req, res, next) => {
       return next(new HttpError("Fill in text field and choose image", 422));
     }
 
-    if (!req.files.image) {
-      return next(new HttpError("Please choose an image ", 422));
-    } else {
-      // NOTE THAT YOU CAN CREATE A TIME FRAME TO DELETE UPLOAD IMAGE IN THE FOLDER
-      const { image } = req.files;
-      //  Image should be less than 1mb
-      if (image.size > 1000000) {
-        return next(
-          new HttpError("Profile picture too big, should be less than 500kb "),
-          422
-        );
-      }
-      // Rename image
-      let fileName = image.name;
-      fileName = fileName.split(".");
-      fileName = fileName[0] + uuid() + "." + fileName[fileName.length - 1];
-      await image.mv(
-        path.join(__dirname, "..", "uploads", fileName),
-        async (err) => {
-          if (err) {
-            return next(new HttpError(err));
-          }
-          // Store image on cloudinary
-          const result = await cloudinary.uploader.upload(
-            path.join(__dirname, "..", "uploads", fileName),
-            { resource_type: "image" }
-          );
+    const image = req.files?.image;
+    if (!image) {
+      return next(new HttpError("Please choose an image", 422));
+    }
 
-          if (!result.secure_url) {
-            return next(
-              new HttpError("Couldn't upload image to cloudinary", 400)
-            );
-          }
-
-          // Save post to database
-          const newPost = await PostModel.create({
-            creator: req.user.id,
-            body,
-            image: result.secure_url,
-          });
-
-          await UserModel.findByIdAndUpdate(newPost?.creator, {
-            $push: { posts: newPost?._id },
-          });
-          res.json({ newPost, message: "Post created successfully" });
-        }
+    if (image.size > 1000000) {
+      return next(
+        new HttpError("Image too big, should be less than 1MB", 422)
       );
     }
+
+    // Upload directly from buffer to Cloudinary (no local disk write)
+    const result = await cloudinary.uploader.upload_stream(
+      { resource_type: "image" },
+      async (error, result) => {
+        if (error || !result.secure_url) {
+          return next(
+            new HttpError("Couldn't upload image to Cloudinary", 400)
+          );
+        }
+
+        // Save post to database
+        const newPost = await PostModel.create({
+          creator: req.user.id,
+          body,
+          image: result.secure_url,
+        });
+
+        await UserModel.findByIdAndUpdate(newPost?.creator, {
+          $push: { posts: newPost?._id },
+        });
+
+        res.json({ newPost, message: "Post created successfully" });
+      }
+    );
+
+    // Pipe image data to Cloudinary upload stream
+    const streamifier = require("streamifier");
+    streamifier.createReadStream(image.data).pipe(result);
+
   } catch (error) {
     return next(new HttpError(error));
   }
 };
+
 
 // ==================== GET POST
 // GET : api/posts/:id and is a PROTECTED ROUTE
