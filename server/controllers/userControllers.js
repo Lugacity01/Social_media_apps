@@ -54,7 +54,10 @@ const registerUser = async (req, res, next) => {
       password: hashedPassword,
     });
 
-    res.json(newUser).status(201);
+    res.json({newUser, 
+        message: "Registered successfully",
+
+    }).status(201);
     // res.json(" User Registered");
   } catch (error) {
     return next(new HttpError(error));
@@ -99,8 +102,9 @@ const loginUser = async (req, res, next) => {
       .json({
         token,
         id: user?._id,
-        success: true,
+        profilePhoto: user?.profilePhoto,
         message: "User login successfully",
+        // success: true,
       })
       .status(200);
     // res.json({token, id: user?._id, ...userInfo}).status(200)
@@ -115,7 +119,7 @@ const loginUser = async (req, res, next) => {
 const getUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).select("-password");
 
     if (!user) {
       return next(new HttpError("User not found"));
@@ -210,14 +214,14 @@ const followUnfollowUser = async (req, res, next) => {
 // POST: api/users/avatar
 // PROTECTED
 const changeUserAvatar = async (req, res, next) => {
-    
-    const { avatar } = req.files;
   try {
     if (!req.files.avatar) {
       return next(new HttpError("Please choose an image", 422));
     }
 
-    // CHeck file sizee
+    
+    const { avatar } = req.files;
+    // Check file sizee
     if (avatar.size > 500000) {
       return next(
         new HttpError(
@@ -229,11 +233,9 @@ const changeUserAvatar = async (req, res, next) => {
 
     let fileName = avatar.name;
     let splittedFilename = fileName.split(".");
-    let newFilename = (splittedFilename[0] =
-      uuid() + "." + splittedFilename[splittedFilename.length - 1]);
-    avatar.mv(
-      path.join(__dirname, "..", "uploads", newFilename),
-      async (err) => {
+    let newFilename = splittedFilename[0] + uuid() + "." + splittedFilename[splittedFilename.length - 1];
+    
+      avatar.mv(path.join(__dirname, "..", "uploads", newFilename), async (err) => {
         if (err) {
           return next(new HttpError(err));
         }
@@ -245,13 +247,17 @@ const changeUserAvatar = async (req, res, next) => {
         );
         if (!result.secure_url) {
           return next(
-            new HttpError("Couldn't uploade image to cloudinary", 422))
-
+            new HttpError("Couldn't uploade image to cloudinary", 422)
+          );
         }
 
-        const updatedUser = await userModel.findByIdAndUpdate(req.user.id, {profilePhoto: result?.secure_url}, {new: true})
+        const updatedUser = await userModel.findByIdAndUpdate(
+          req.user.id,
+          { profilePhoto: result?.secure_url },
+          { new: true }
+        );
 
-        res.json(updatedUser).status(200)
+        res.json(updatedUser).status(200);
       }
     );
 
