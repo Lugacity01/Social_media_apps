@@ -10,7 +10,8 @@ const { server, app } = require("./socket/socket");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ extended: true }));
-app.use(cors({ credentials: true, origin: ["http://localhost:5173"] }));
+// app.use(cors({ credentials: true, origin: ["http://localhost:5173"] }));
+app.use(cors({ credentials: true, origin: ["https://social-media-apps-one.vercel.app"] }));
 app.use(upload());
 
 app.use("/api", routes);
