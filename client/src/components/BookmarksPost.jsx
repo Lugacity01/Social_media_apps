@@ -62,8 +62,8 @@ const BookmarksPost = ({ post }) => {
 
   return (
     <button className="feed__footer-bookmark" onClick={createBookmark}>
-      {postBookmarked ? "1" : "2"}
-      {/* {postBookmarked ? <FaBookmark/> : <FaRegBookmark/>} */}
+      {/* {postBookmarked ? "1" : "2"} */}
+      {postBookmarked ? <FaBookmark/> : <FaRegBookmark/>}
     </button>
   );
 };
