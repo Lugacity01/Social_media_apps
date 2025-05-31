@@ -60,7 +60,7 @@ const NavBar = () => {
     <nav className="navbar">
       <div className="container navbar__container">
         <Link to="/" className="navbar__logo">
-          LUGACITY
+          LUGACITY APP
         </Link>
         <form className="navbar__search">
           <input type="search" placeholder="Search" />
