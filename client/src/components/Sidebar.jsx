@@ -17,7 +17,7 @@ const Sidebar = () => {
   return (
     <menu className="sidebar">
       <NavLink
-        to="/"
+        to=""
         className={`sidebar__item ${({ isActive }) =>
           isActive ? "active" : ""}`}
       >
@@ -28,7 +28,7 @@ const Sidebar = () => {
       </NavLink>
 
       <NavLink
-        to="/messages"
+        to="/app/messages"
         className={`sidebar__item ${({ isActive }) =>
           isActive ? "active" : ""}`}
       >
@@ -39,7 +39,7 @@ const Sidebar = () => {
       </NavLink>
 
       <NavLink
-        to="/bookmarks"
+        to="/app/bookmarks"
         className={`sidebar__item ${({ isActive }) =>
           isActive ? "active" : ""}`}
       >

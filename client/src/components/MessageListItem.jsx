@@ -10,7 +10,7 @@ const MessageListItem = ({conversation}) => {
 
   return (
 
-        <Link to={`/messages/${conversation?.participants[0]?._id}`} className='messageList__item'>
+        <Link to={`/app/messages/${conversation?.participants[0]?._id}`} className='messageList__item'>
         <ProfileImage image={conversation?.participants[0]?.profilePhoto} className={onlineUsers?.includes(conversation?.participants[0]?._id) ? "active" : ""}/>
         <div className="messageList__item-details">
                 <h5>{conversation?.participants[0]?.fullName}</h5>

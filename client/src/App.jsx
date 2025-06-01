@@ -16,20 +16,37 @@ import { Provider } from "react-redux";
 import store from "./store/store";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LandingPage from "./pages/LandingPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <LandingPage />, // Landing page at root "/"
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    path: "/logout",
+    element: <Logout />,
+  },
+  {
+    path: "/app", // or keep it "/"
     element: <RootLayout />,
     errorElement: <ErrorPage />,
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <Home />, // Will be at "/app"
       },
       {
         path: "messages",
-        element: <MessagesList />,
+        element: <MessagesList />, // "/app/messages"
       },
       {
         path: "messages/:receiverId",
@@ -49,27 +66,19 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
-  },
-  {
-    path: "/logout",
-    element: <Logout />,
-  },
 ]);
+
 
 const App = () => {
   return (
     <Provider store={store}>
       <>
-      
-      <RouterProvider router={router} />
-       <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
+        <RouterProvider router={router} />
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar
+        />
       </>
     </Provider>
   );

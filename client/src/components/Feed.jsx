@@ -55,7 +55,7 @@ const Feed = ({ post, onDeletePost }) => {
   return (
     <article className="feed">
       <header className="feed__header">
-        <Link to={`/users/${post?.creator}`} className="feed__header-profile">
+        <Link to={`/app/users/${post?.creator}`} className="feed__header-profile">
           <ProfileImage image={creator?.profilePhoto} />
           <div className="feed__header-details">
             <h4>{creator?.fullName}</h4>

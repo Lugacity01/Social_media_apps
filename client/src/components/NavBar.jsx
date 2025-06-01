@@ -60,7 +60,14 @@ const NavBar = () => {
     <nav className="navbar">
       <div className="container navbar__container">
         <Link to="/" className="navbar__logo">
-          LUGACITY APP
+          <div className="flex items-center">
+            <div className="flex-shrink-0 flex items-center">
+              <div className="w-10 h-10 rounded-full bg-[#3385ff] flex items-center justify-center text-white font-bold text-xl">
+                L
+              </div>
+              <span className="ml-2 text-xl font-bold ">Lugacity</span>
+            </div>
+          </div>
         </Link>
         <form className="navbar__search">
           <input type="search" placeholder="Search" />
@@ -70,7 +77,7 @@ const NavBar = () => {
         </form>
 
         <div className="navbar__right">
-          <Link to={`/users/${userId}`} className="navbar__profile ">
+          <Link to={`/app/users/${userId}`} className="navbar__profile ">
             <ProfileImage image={user?.profilePhoto} />
           </Link>
 

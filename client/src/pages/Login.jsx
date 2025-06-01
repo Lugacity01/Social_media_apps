@@ -39,7 +39,7 @@ const Login = () => {
       if (response.status == 200) {
         dispatch(userActions.changeCurrentUser(response?.data));
         localStorage.setItem("currentUser", JSON.stringify(response?.data));
-        navigate("/");
+        navigate("/app");
       }
 
       toast.success(response?.data?.message || "Login successfully!");

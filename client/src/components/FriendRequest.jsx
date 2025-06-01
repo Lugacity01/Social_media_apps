@@ -30,11 +30,11 @@ const FriendRequest = ({ friend, onFilterFriend }) => {
   return (
     <article className="friendRequest">
       <div className="friendRequest__info">
-        <Link to={`/users/${friend?._id}`}>
+        <Link to={`/app/users/${friend?._id}`}>
           <ProfileImage image={friend?.profilePhoto} />
         </Link>
         <div className="friendRequest__details">
-          <Link to={`/users/${friend?._id}`}>
+          <Link to={`/app/users/${friend?._id}`}>
             <h5>{friend?.fullName}</h5>
           </Link>
           <small>
