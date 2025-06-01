@@ -37,10 +37,10 @@ const LandingPage = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-xl">
-                L
+                Y
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">
-                Lugacity
+                YankApp
               </span>
             </div>
           </div>
@@ -69,15 +69,15 @@ const LandingPage = () => {
 
       <main>
         {/* Hero Section */}
-        <section className="flex flex-col md:flex-row items-center justify-between px-4 md:px-8 lg:px-16 py-16 md:py-24 max-w-7xl mx-auto">
+        <section className="flex flex-col md:flex-row items-center justify-between px-4 md:px-8 lg:px-16 py-12 md:py-14 max-w-7xl mx-auto">
           <div className="md:w-1/2 space-y-6">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
+            <h1 className="text-5xl lg:text-7xl font-extrabold text-gray-900 lg:leading-tight">
               Your World, Connected.
               <span className="block text-indigo-600">Instantly.</span>
             </h1>
             <p className="text-lg text-gray-600">
-              Lugacity App is where moments become memories. Share your life,
-              discover new interests, and connect.
+              Lugacity App is where moments become memories. <span className="lg:block"> Share your life,
+              discover new interests, and connect.</span>
             </p>
             <div className="flex flex-wrap gap-4 mt-6">
               <Link
@@ -223,10 +223,10 @@ const LandingPage = () => {
           <div>
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-indigo-700 flex items-center justify-center text-white font-extrabold text-2xl select-none shadow-lg">
-                L
+               Y
               </div>
               <span className="text-white font-extrabold text-3xl tracking-widest select-none">
-                Lugacity
+                YankApp
               </span>
             </div>
             

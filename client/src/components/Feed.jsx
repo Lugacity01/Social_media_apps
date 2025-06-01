@@ -95,7 +95,7 @@ const Feed = ({ post, onDeletePost }) => {
         <div>
           <LikeDislikePost post={post} />
           <button className="feed__footer-comments">
-            <Link to={`/posts/${post?._id}`}>
+            <Link to={`/app/posts/${post?._id}`}>
               <FaRegCommentDots />
             </Link>
             <small>{post?.comments?.length}</small>
